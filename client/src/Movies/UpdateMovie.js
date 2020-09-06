@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import axios from "axios";
+// import MovieList from "./MovieList";
 
 const initialMovieStats = {
     title: "",
     director: "",
-    metascore: ""
-    //stars: []
+    metascore: "",
+    stars: []
 };
 
 const UpdateMovieForm = (props) => {
@@ -19,7 +20,7 @@ const UpdateMovieForm = (props) => {
 
     useEffect( () => {
         axios   
-            .get(`http://localhost:3000/movies/${id}`)
+            .get(`http://localhost:5000/api/movies/${id}`)
             .then( (res) => {
                 // Set (COMPONENT-LEVEL-STATE) item to res.data.
                 setMovieStats(res.data)
@@ -37,20 +38,31 @@ const UpdateMovieForm = (props) => {
         });
     };
 
+    const clearUpdateForm = () => {
+        setMovieStats({
+            title: "",
+            director: "",
+            metascore: ""
+        });
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
         // make a PUT request to edit the movieStats
         // .put(<endpoint>, <movieStats to be updated>)
         axios
-            .put(`http://localhost:3000/movies/${id}`, movieStats)
+            .put(`http://localhost:5000/api/movies/${id}`, movieStats)
             .then( (res) => {
+                console.log(res.data);
                 // Set (APPLICATION-LEVEL-STATE) movieList to res.data,
                 // after .put update is completed and returned.
                 props.setMovieList(res.data)
                 // redirect user from the UpdateMovieForm form, to the updated movie's card
-                push(`/movies/${id}`)
+                push("/");
             })
             .catch( (err) => console.log(err));
+
+        clearUpdateForm();
     };
 
     return (
